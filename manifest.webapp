@@ -1,0 +1,20 @@
+{
+  "name": "TokFox",
+  "description": "TokFox demo",
+  "launch_path": "/index.html",
+  "orientation": "portrait",
+  "type": "privileged",
+  "default_locale": "en",
+  "icons": {
+    "60": "/icon.png"
+  },
+  "permissions": {
+    "desktop-notification": {},
+    "push": {},
+    "systemXHR": {}
+  },
+  "messages": [
+    { "push": "/index.html"},
+    { "notification": "/index.html" }
+  ]
+}
