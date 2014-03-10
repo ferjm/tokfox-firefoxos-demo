@@ -1479,7 +1479,7 @@ OTHelpers.observeStyleChanges = function(element, stylesToObserve, onChange) {
 
             stylesToObserve.forEach(function(style) {
                 if(isHidden && (style == 'width' || style == 'height')) return;
-                
+
                 var newValue = getStyle(style);
 
                 if (newValue !== oldStyles[style]) {
@@ -1788,7 +1788,7 @@ var defaultDisplayValueForElement = function(element) {
     }
 
     if (!defaultDisplays[element.ownerDocument]) defaultDisplays[element.ownerDocument] = {};
-    
+
     // We need to know what display value to use for this node. The easiest way
     // is to actually create a node and read it out.
     var testNode = element.ownerDocument.createElement(element.nodeName),
@@ -1809,7 +1809,7 @@ var isHidden = function(element) {
 };
 
 OTHelpers.show = function(element) {
-    var display = element.style.display; 
+    var display = element.style.display;
         //,
         // computedStyle = element.ownerDocument.defaultView.getComputedStyle(element, null),
         // computedDisplay = computedStyle.getPropertyValue('display');
@@ -1820,7 +1820,7 @@ OTHelpers.show = function(element) {
     }
 
     if (isHidden(element)) {
-        // It's still hidden so there's probably a stylesheet that declares this 
+        // It's still hidden so there's probably a stylesheet that declares this
         // element as display:none;
         displayStateCache[element] = 'none';
 
@@ -1902,7 +1902,7 @@ OTHelpers.applyCSS = function(element, styles, callback) {
 
 // Make +element+ visible while executing +callback+.
 OTHelpers.makeVisibleAndYield = function(element, callback) {
-    // find whether it's the element or an ancester that's display none and 
+    // find whether it's the element or an ancester that's display none and
     // then apply to whichever it is
     var targetElement = OTHelpers.findElementWithDisplayNone(element);
     if (!targetElement) return;
@@ -1964,7 +1964,7 @@ OTHelpers.getXML = function(url, options) {
 
         onSuccess = function(event) {
             var response = event.target.responseXML;
-            
+
             if (isValidXMLDocument(response)) {
                 if (callerSuccessCb) callerSuccessCb(response, event, event.target);
             }
@@ -10675,7 +10675,7 @@ OT.SubscriberPeerConnection = function(remoteConnection, session, stream, proper
     this.destroy = function() {
       if (_peerConnection) {
         var numDelegates = _peerConnection.unregisterMessageDelegate(_relayMessageToPeer);
-        
+
         // Only clean up the PeerConnection if there isn't another Subscriber using it
         if (numDelegates === 0) {
           // Unsubscribe us from the stream, if it hasn't already been destroyed
@@ -10683,7 +10683,7 @@ OT.SubscriberPeerConnection = function(remoteConnection, session, stream, proper
               // Notify the server components
               session._.jsepUnsubscribe(stream);
           }
-          
+
           // Ref: OPENTOK-2458 disable all audio tracks before removing it.
           this.subscribeToAudio(false);
         }
@@ -12528,7 +12528,7 @@ OT.Publisher = function() {
                 if (!this.session) return;
 
                 _state.set('PublishingToSession');
-                
+
                 if (_streamCreatedTimeout) {
                   clearTimeout(_streamCreatedTimeout);
                 }
@@ -12583,7 +12583,7 @@ OT.Publisher = function() {
             _streamCreatedTimeout = null;
 
             logAnalyticsEvent('publish', 'Success', 'streamType', 'WebRTC');
-            
+
             this.stream = stream;
             this.stream.on('destroyed', this.disconnect, this);
 
@@ -13551,21 +13551,22 @@ messageServerToClientErrorCodes['403'] = OT.ExceptionCodes.AUTHENTICATION_ERROR;
 // Return the error in +xmlDocument+, if there is one. Otherwise it will return
 // false.
 parseErrorFromXMLDocument = function(xmlDocument) {
-    /*if (xmlDocument && xmlDocument.documentElement && xmlDocument.documentElement.firstElementChild !== null) {
-        var errorNodes = xmlDocument.evaluate('//error', xmlDocument.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null ),
-            numErrorNodes = errorNodes.snapshotLength;
+    if (xmlDocument && xmlDocument.documentElement && xmlDocument.documentElement.firstElementChild !== null) {
+        var errorNodes = xmlDocument.getElementsByTagName('error');
+        var numErrorNodes = errorNodes.length;
 
         if (numErrorNodes === 0) return false;
 
         for (var i=0; i<numErrorNodes; ++i) {
-            var errorNode = errorNodes.snapshotItem(i);
+            var errorNode = errorNodes.item(i);
 
             return {
                 code: errorNode.getAttribute('code'),
                 message: errorNode.firstElementChild.getAttribute('message')
             };
         }
-    }*/
+
+    }
 
     // There was an error, but we couldn't find the error info.
     return {
@@ -14021,10 +14022,10 @@ OT.Session = function(sessionId) {
           var reason = 'Authentication Error: The apiKey passed into the session.connect ' +
             'method does not match the apiKey in the token or session you are trying to ' +
             'connect to.';
-            
+
           this.logEvent('Connect', 'Failure', 'reason', 'GetSessionInfo:' +
             OT.ExceptionCodes.AUTHENTICATION_ERROR + ':' + reason);
-          
+
           sessionConnectFailed.call(this, reason, OT.ExceptionCodes.AUTHENTICATION_ERROR);
       } else {
           connectMessenger.call(this);
