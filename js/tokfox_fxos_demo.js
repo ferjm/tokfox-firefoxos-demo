@@ -7,7 +7,7 @@ var TokFoxFxOSDemo = {
 
   apiKey: null,
   // TODO hardcoded for now.
-  sessionId: null,
+  sessionId: '1_MX40NDY3NTE5Mn5-TW9uIE1hciAxMCAwOTo1MjoyMSBQRFQgMjAxNH4wLjIxMzk5NjQ3fg',
   token: null,
 
   init: function tfd_init() {
