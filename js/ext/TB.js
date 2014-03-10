@@ -5046,12 +5046,6 @@ OT.DestroyedEvent = function(type, target, reason) {
 (function(global) {
   'use strict';
 
-  if ( (global.TextEncoder !== void 0) && (global.TextDecoder !== void 0))  {
-    // defer to the native ones
-    // @todo is this a good idea?
-    return;
-  }
-
   //
   // Utilities
   //
