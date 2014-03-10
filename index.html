@@ -1,14 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
     <meta charset="utf-8">
-    <title>TokFox Demo</title>
+    <title>TokFox Firefox OS demo</title>
+
+    <!-- Localization -->
+    <script defer src="shared/js/l10n.js"></script>
+    <link rel="resource" type="application/l10n" href="locales/locales.ini">
+
+    <!-- Shared styles -->
+    <link rel="stylesheet" type="text/css" href="shared/style/confirm.css" >
+    <link rel="stylesheet" type="text/css" href="shared/style/headers.css">
+    <link rel="stylesheet" type="text/css" href="shared/style/input_areas.css" >
+    <link rel="stylesheet" type="text/css" href="shared/style/status.css">
+
+    <!-- Specific styles -->
+    <link rel="stylesheet" type="text/css" href="style/tokfox_fxos_demo.css">
+
+    <!-- Specific code -->
+    <script defer src="js/ext/ffospushhelper.min.js"></script>
+    <script defer src="js/ext/TB.min.js"></script>
+    <script defer src="js/ext/tokfox-client-0.0.0.min.js"></script>
+    <script defer src="js/tokfox_fxos_demo.js"></script>
   </head>
-  <body>
-    <h1>TokFox demo</h1>
 
-    <h2>Try this on a Firefox OS phone</h2>
-
-    <script defer src="./lib/ffospushhelper.js"></script>
+  <body role="application">
+    <section role="region">
+      <header>
+	<button id="close"><span class="icon icon-close" data-l10n-id="close"> close </span></button>
+	<h1 id="title" data-l10n-id="title">TokFox Firefox OS demo</h1>
+      </header>
+    </section>
   </body>
 </html>
