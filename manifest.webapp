@@ -11,7 +11,9 @@
   "permissions": {
     "desktop-notification": {},
     "push": {},
-    "systemXHR": {}
+    "systemXHR": {},
+    "video-capture": {},
+    "audio-capture": {}
   },
   "messages": [
     { "push": "/index.html"},

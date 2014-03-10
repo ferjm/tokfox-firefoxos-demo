@@ -3,50 +3,58 @@
 
 'use strict';
 
-var TokFoxFxOSDemo = (function() {
-  /** Close button node */
-  var closeButton = null;
+var TokFoxFxOSDemo = {
 
-  /**
-   * Init function.
-   */
-  function tfd_init() {
-    // Retrieve the various page elements
-    closeButton = document.getElementById('close');
+  apiKey: null,
+  // TODO hardcoded for now.
+  sessionId: '1_MX40NDYzMjUyMn5-RnJpIE1hciAwNyAwOToxMjo0NyBQU1QgMjAxNH4wLjUxNjg5MjQzfg',
+  token: null,
 
-    // Event handlers
-    closeButton.addEventListener('click', tfb_onClose);
+  init: function tfd_init() {
+    // Pretty basic test of TokFox + TokBox functionality.
+    window.TokFoxClient.createSession('publisher', this.sessionId,
+                                      this.onTokFoxSession.bind(this));
+  },
 
-    tfb_createSession();
+  initTokBoxSession: function initTokBoxSession() {
+    this.publisher = TB.initPublisher(this.apiKey);
+    this.session   = TB.initSession(this.sessionId);
+
+    this.session.connect(this.apiKey, this.token);
+    this.session.addEventListener('sessionConnected',
+                                  this.sessionConnectedHandler);
+    this.session.addEventListener('streamCreated', this.streamCreatedHandler);
+  },
+
+  sessionConnectedHandler: function(event) {
+    this.session.publish(this.publisher);
+    this.subscribeToStreams(event.streams);
+  },
+
+  subscribeToStreams: function(streams) {
+    for (var i = 0; i < streams.length; i++) {
+      var stream = streams[i];
+      if (stream.connection.connectionId != this.session.conecctionId) {
+        this.session.subscribe(stream);
+      }
+    }
+  },
+
+  streamCreatedHandler: function(event) {
+    subscribeToStreams(event.streams);
+  },
+
+  onTokFoxSession: function onTokFoxSession(error, result) {
+    if (error && result.apikey && result.token) {
+      return;
+    }
+    console.log(JSON.stringify(result));
+    this.apiKey = result.apiKey;
+    this.token = result.token;
+    this.initTokBoxSession();
   }
 
-  /**
-   *
-   */
-  function tfb_createSession() {
-    var tokfox = window.TokFoxClient;
-
-    tokfox.createSession(
-      null,
-      null,
-      function(error, result) {
-        console.log('result is ' + JSON.stringify(result));
-        console.log('error is ' + JSON.stringify(error));
-    });
-  }
-
-  /**
-   * Handler for closing the app.
-   */
-  function tfb_onClose() {
-    window.close();
-  }
-
-  // Public API.
-  return {
-    init: tfd_init
-  };
-})();
+};
 
 window.addEventListener('load', function callSetup(evt) {
   window.removeEventListener('load', callSetup);
