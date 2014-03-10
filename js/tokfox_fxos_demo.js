@@ -36,7 +36,7 @@ var TokFoxFxOSDemo = {
   subscribeToStreams: function(streams) {
     for (var i = 0; i < streams.length; i++) {
       var stream = streams[i];
-      if (stream.connection.connectionId != this.session.conecctionId) {
+      if (stream.connection.connectionId != this.session.connection.connectionId) {
         this.session.subscribe(stream);
       }
     }
@@ -50,7 +50,6 @@ var TokFoxFxOSDemo = {
     if (error && result.apikey && result.token) {
       return;
     }
-    console.log(JSON.stringify(result));
     this.apiKey = result.apiKey;
     this.token = result.token;
     this.sessionId = result.sessionId;
