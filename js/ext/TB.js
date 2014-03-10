@@ -2297,8 +2297,9 @@ OT.properties = function(properties) {
         props.assetURL = props.cdnURL + "/webrtc/" + props.version;
     }
 
-    props.configURL = props.assetURL + "/js/dynamic_config.min.js";
-    props.cssURL = props.assetURL + "/css/ot.min.css";
+    // XXX: hardcoding our shit.
+    props.configURL = "./js/ext/dynamic_config.min.js";
+    props.cssURL = "./style/opentok/ot.min.css";
 
     return props;
 }(OT.properties);
@@ -13550,8 +13551,7 @@ messageServerToClientErrorCodes['403'] = OT.ExceptionCodes.AUTHENTICATION_ERROR;
 // Return the error in +xmlDocument+, if there is one. Otherwise it will return
 // false.
 parseErrorFromXMLDocument = function(xmlDocument) {
-console.log(xmlDocument);
-    if (xmlDocument && xmlDocument.documentElement && xmlDocument.documentElement.firstElementChild !== null) {
+    /*if (xmlDocument && xmlDocument.documentElement && xmlDocument.documentElement.firstElementChild !== null) {
         var errorNodes = xmlDocument.evaluate('//error', xmlDocument.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null ),
             numErrorNodes = errorNodes.snapshotLength;
 
@@ -13565,7 +13565,7 @@ console.log(xmlDocument);
                 message: errorNode.firstElementChild.getAttribute('message')
             };
         }
-    }
+    }*/
 
     // There was an error, but we couldn't find the error info.
     return {
