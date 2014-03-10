@@ -7,11 +7,12 @@ var TokFoxFxOSDemo = {
 
   apiKey: null,
   // TODO hardcoded for now.
-  sessionId: '1_MX40NDYzMjUyMn5-RnJpIE1hciAwNyAwOToxMjo0NyBQU1QgMjAxNH4wLjUxNjg5MjQzfg',
+  sessionId: null,
   token: null,
 
   init: function tfd_init() {
     // Pretty basic test of TokFox + TokBox functionality.
+    window.TokFoxClient.debug = true;
     window.TokFoxClient.createSession('publisher', this.sessionId,
                                       this.onTokFoxSession.bind(this));
   },
@@ -22,8 +23,9 @@ var TokFoxFxOSDemo = {
 
     this.session.connect(this.apiKey, this.token);
     this.session.addEventListener('sessionConnected',
-                                  this.sessionConnectedHandler);
-    this.session.addEventListener('streamCreated', this.streamCreatedHandler);
+                                  this.sessionConnectedHandler.bind(this));
+    this.session.addEventListener('streamCreated',
+                                  this.streamCreatedHandler.bind(this));
   },
 
   sessionConnectedHandler: function(event) {
@@ -41,7 +43,7 @@ var TokFoxFxOSDemo = {
   },
 
   streamCreatedHandler: function(event) {
-    subscribeToStreams(event.streams);
+    this.subscribeToStreams(event.streams);
   },
 
   onTokFoxSession: function onTokFoxSession(error, result) {
@@ -51,6 +53,7 @@ var TokFoxFxOSDemo = {
     console.log(JSON.stringify(result));
     this.apiKey = result.apiKey;
     this.token = result.token;
+    this.sessionId = result.sessionId;
     this.initTokBoxSession();
   }
 
