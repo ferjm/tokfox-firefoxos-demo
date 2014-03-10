@@ -7,15 +7,10 @@ var TokFoxFxOSDemo = (function() {
   /** Close button node */
   var closeButton = null;
 
-  /** Localization */
-  var _ = null;
-
   /**
    * Init function.
    */
   function tfd_init() {
-    _ = navigator.mozL10n.get;
-
     // Retrieve the various page elements
     closeButton = document.getElementById('close');
 
