@@ -7890,7 +7890,7 @@ OT.Rumor.Message.prototype.serialize = function () {
 
   // Write out the address.
   for (var i = 0; i < this.toAddress.length; i++) {
-    address[i] = TextEncoder('utf-8').encode(this.toAddress[i]);
+    address[i] = new TextEncoder('utf-8').encode(this.toAddress[i]);
     cBuf += 2;
     cBuf += address[i].length;
   }
@@ -7900,14 +7900,14 @@ OT.Rumor.Message.prototype.serialize = function () {
 
   // Write out the params
   for (var i = 0; i < this.headers.length; i++) {
-    headerKey[i] = TextEncoder('utf-8').encode(this.headers[i].key);
-    headerVal[i] = TextEncoder('utf-8').encode(this.headers[i].val);
+    headerKey[i] = new TextEncoder('utf-8').encode(this.headers[i].key);
+    headerVal[i] = new TextEncoder('utf-8').encode(this.headers[i].val);
     cBuf += 4;
     cBuf += headerKey[i].length;
     cBuf += headerVal[i].length;
   }
 
-  dataView = TextEncoder('utf-8').encode(this.data);
+  dataView = new TextEncoder('utf-8').encode(this.data);
   cBuf += dataView.length;
 
   // Let's allocate a binary blob of this size
@@ -7987,7 +7987,7 @@ OT.Rumor.Message.deserialize = function (buffer) {
     length = uint8View[offset++] << 8;
     length += uint8View[offset++];
     var strView = new Uint8Array(buffer, offset, length);
-    address[i] = TextDecoder('utf-8').decode(strView);
+    address[i] = new TextDecoder('utf-8').decode(strView);
     offset += length;
   }
 
@@ -7998,19 +7998,19 @@ OT.Rumor.Message.deserialize = function (buffer) {
     length = uint8View[offset++] << 8;
     length += uint8View[offset++];
     var strView = new Uint8Array(buffer, offset, length);
-    var keyStr = TextDecoder('utf-8').decode(strView);
+    var keyStr = new TextDecoder('utf-8').decode(strView);
     offset += length;
 
     length = uint8View[offset++] << 8;
     length += uint8View[offset++];
     strView = new Uint8Array(buffer, offset, length);
-    var valStr = TextDecoder('utf-8').decode(strView);
+    var valStr = new TextDecoder('utf-8').decode(strView);
     headers[i] =  { key : keyStr, val : valStr };
     offset += length;
   }
 
   var dataView = new Uint8Array(buffer, offset);
-  var data = TextDecoder('utf-8').decode(dataView);
+  var data = new TextDecoder('utf-8').decode(dataView);
 
  return new OT.Rumor.Message(type, address, headers, data);
 };
