@@ -5,57 +5,65 @@
 
 var TokFoxFxOSDemo = {
 
-  apiKey: null,
+  apiKey: '44675192',
   // TODO hardcoded for now.
-  sessionId: '1_MX40NDY3NTE5Mn5-TW9uIE1hciAxMCAwOTo1MjoyMSBQRFQgMjAxNH4wLjIxMzk5NjQ3fg',
-  token: null,
+  sessionId: '2_MX40NDY3NTE5Mn5-V2VkIE1hciAxMiAwNDo0NTo1OSBQRFQgMjAxNH4wLjkyMjMyNjI3fg',
+  token: 'T1==cGFydG5lcl9pZD00NDY3NTE5MiZzZGtfdmVyc2lvbj10YnJ1YnktdGJyYi12MC45MS4yMDExLTAyLTE3JnNpZz1jYTE4OTg3ZTEzNjQ0ZjZjZDZkMDU0OGZkNDUwMWY1Y2FlYzUwZmZhOnJvbGU9cHVibGlzaGVyJnNlc3Npb25faWQ9Ml9NWDQwTkRZM05URTVNbjUtVjJWa0lFMWhjaUF4TWlBd05EbzBOVG8xT1NCUVJGUWdNakF4Tkg0d0xqa3lNak15TmpJM2ZnJmNyZWF0ZV90aW1lPTEzOTQ2MjQ3Njcmbm9uY2U9MC43ODU2ODgwNTk5MzcwNjk5JmV4cGlyZV90aW1lPTEzOTcyMTY3NTUmY29ubmVjdGlvbl9kYXRhPQ==',
 
   init: function tfd_init() {
-    // Pretty basic test of TokFox + TokBox functionality.
-    window.TokFoxClient.debug = true;
-    window.TokFoxClient.createSession('publisher', this.sessionId,
-                                      this.onTokFoxSession.bind(this));
-  },
-
-  initTokBoxSession: function initTokBoxSession() {
-    this.publisher = TB.initPublisher(this.apiKey);
-    this.session   = TB.initSession(this.sessionId);
-
-    this.session.connect(this.apiKey, this.token);
-    this.session.addEventListener('sessionConnected',
-                                  this.sessionConnectedHandler.bind(this));
-    this.session.addEventListener('streamCreated',
-                                  this.streamCreatedHandler.bind(this));
-  },
-
-  sessionConnectedHandler: function(event) {
-    this.session.publish(this.publisher);
-    this.subscribeToStreams(event.streams);
-  },
-
-  subscribeToStreams: function(streams) {
-    for (var i = 0; i < streams.length; i++) {
-      var stream = streams[i];
-      if (stream.connection.connectionId != this.session.connection.connectionId) {
-        this.session.subscribe(stream);
+    document.getElementById('buttons_container').addEventListener('click', function(e) {
+      if (e.target.tagName !== 'BUTTON') {
+        return;
       }
-    }
-  },
-
-  streamCreatedHandler: function(event) {
-    this.subscribeToStreams(event.streams);
-  },
-
-  onTokFoxSession: function onTokFoxSession(error, result) {
-    if (error && result.apikey && result.token) {
-      return;
-    }
-    this.apiKey = result.apiKey;
-    this.token = result.token;
-    this.sessionId = result.sessionId;
-    this.initTokBoxSession();
+      switch(e.target.dataset.action) {
+        case 'join-session':
+          console.log('ACCION DE JOIN');
+          CallHandler.join(
+            this.apiKey,
+            this.sessionId,
+            this.token,
+            null,
+            function() {
+              alert('CONECTADO A LA SESSION');
+            },
+            function() {
+              alert('NUEVO STREAM');
+            }
+          );
+          break;
+        case 'dial':
+          // TODO Add this functionality
+          CallHandler.join(
+            {
+              type: 'msisdn',
+              value: '+34612123123'
+            },
+            function() {
+              alert('Invitation SENT')
+            }
+          );
+          break;
+        case 'call-test':
+          CallHandler.join(
+            this.apiKey,
+            this.sessionId,
+            this.token,
+            'emitter-video',
+            function() {
+              // alert('CONECTADO A LA SESSION');
+            },
+            function() {
+              // alert('NUEVO STREAM');
+            }
+          );
+          break;
+        default:
+          console.warn('Action not defined');
+        }
+    }.bind(this)); 
   }
 
+  
 };
 
 window.addEventListener('load', function callSetup(evt) {
