@@ -63,6 +63,9 @@ var TokFoxFxOSDemo = {
             alert(JSON.stringify(result));
           });
           break;
+        case 'call-log-test':
+          CallLog.add('incoming', 'connected', '1234');
+          break;
         default:
           console.warn('Action not defined');
         }
