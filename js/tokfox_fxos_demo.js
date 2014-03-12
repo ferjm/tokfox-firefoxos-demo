@@ -4,7 +4,6 @@
 'use strict';
 
 var TokFoxFxOSDemo = {
-
   apiKey: '44675192',
   // TODO hardcoded for now.
   sessionId: '2_MX40NDY3NTE5Mn5-V2VkIE1hciAxMiAwNDo0NTo1OSBQRFQgMjAxNH4wLjkyMjMyNjI3fg',
@@ -67,10 +66,8 @@ var TokFoxFxOSDemo = {
         default:
           console.warn('Action not defined');
         }
-    }.bind(this)); 
+    }.bind(this));
   }
-
-  
 };
 
 window.addEventListener('load', function callSetup(evt) {
