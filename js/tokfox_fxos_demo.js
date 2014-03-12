@@ -57,6 +57,13 @@ var TokFoxFxOSDemo = {
             }
           );
           break;
+        case 'register':
+          Notifications.listen(function onNotification() {
+          });
+          Notifications.register(function onRegister(error, result) {
+            alert(JSON.stringify(result));
+          });
+          break;
         default:
           console.warn('Action not defined');
         }
