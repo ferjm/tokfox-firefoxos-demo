@@ -9,5 +9,5 @@ window.addEventListener('load', function callSetup(evt) {
   window.removeEventListener('load', callSetup);
 
   UIManager.init();
-  UIManager.register();
- });
+  ActivityHandler.init();
+});

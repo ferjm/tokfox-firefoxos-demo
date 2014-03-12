@@ -11,9 +11,15 @@
       return;
     }
 
+    UIManager.call(null, number, function() {
+      window.close();
+    });
+
     CallHandler.dial({
-      type: 'msisdn',
-      alias: number
+       type: 'msisdn',
+       alias: number
+    }, function() {
+      console.log('Yay!');
     });
   }
 
