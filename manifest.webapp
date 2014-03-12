@@ -1,7 +1,7 @@
 {
   "name": "TokFox",
   "description": "TokFox demo",
-  "launch_path": "/index.html",
+  "launch_path": "/demo.html",
   "orientation": "portrait",
   "type": "privileged",
   "default_locale": "en",
