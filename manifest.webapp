@@ -19,5 +19,15 @@
     { "push": "/index.html"},
     { "push-register": "/index.html"},
     { "notification": "/index.html" }
-  ]
+  ],
+  "activities": {
+    "dial": {
+      "filters": {
+        "type": "webtelephony/number",
+        "number": { "pattern":"[\\d\\s+#*().-]{0,50}" }
+      },
+      "href": "/index.html",
+      "disposition": "inline"
+    }
+  }
 }
