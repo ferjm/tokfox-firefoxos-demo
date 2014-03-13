@@ -125,11 +125,11 @@
         var token = cs_result.token;
 
         if (!token || !apiKey || !sessionId) {
-                var error = {};
-                error.msg = 'Result from /Session is not valid';
-                if (typeof callback === 'function') {
+          var error = {};
+          error.message = 'Result from /Session is not valid';
+          if (typeof callback === 'function') {
             callback(error, null);
-                }
+          }
           return;
         }
 

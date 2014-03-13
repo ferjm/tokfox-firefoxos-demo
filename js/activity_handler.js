@@ -37,6 +37,8 @@
        value: number
     }, function(error, result) {
       if (error) {
+        // Handle errors here.
+        alert(error.message || 'Oh, something bad happened. Quit.');
         window.close();
       }
     });
