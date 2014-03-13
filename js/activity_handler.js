@@ -18,31 +18,9 @@
       return;
     }
 
-    if (!localStorage['msisdn']) {
-      UIManager.register(function(phoneNumber) {
-        Notifications.register(function onRegister(r_error, r_result) {
-          if (!r_error) {
-            TokFoxClient.createAccount(
-              'msisdn',
-              phoneNumber,
-              r_result.endPoint,
-              function(ca_error, ca_result) {
-                if (!ca_error) {
-                  _makeCall(number);
-                  localStorage['msisdn'] = number;
-                  return;
-                }
-                // TODO: Handle error if any.
-                alert('Unable to register the user.');
-                window.close();
-                return;
-            });
-            return;
-          }
-          // TODO: Improve the way this error is handled.
-          alert('Unable to register the user.');
-          window.close();
-        });
+    if (!AccountManager.account) {
+      AccountManager.login(function() {
+        _makeCall(number);
       });
     } else {
       _makeCall(number);
