@@ -8,6 +8,11 @@
 window.addEventListener('load', function callSetup(evt) {
   window.removeEventListener('load', callSetup);
 
+  Notifications.listen(function onNotification() {
+  });
+  Notifications.register(function onRegister(error, result) {
+  });
+
   UIManager.init();
   ActivityHandler.init();
 });
