@@ -10,12 +10,10 @@ window.addEventListener('load', function callSetup(evt) {
 
   Notifications.init(
     function onMessage(invitationID) {
-      console.log('Mensaje push recibido por el canal');
-      console.log('La invitationID es ' + invitationID);
       CallHandler.onCall(invitationID);
     },
     function onRegistered(error, endPoint) {
-      console.log('Registrado ' + endPoint);
+      // TODO
     }
   );
 
