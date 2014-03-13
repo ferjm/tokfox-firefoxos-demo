@@ -18,14 +18,6 @@
 
     signUp: function signUp(phoneNumber, callback) {
       var self = this;
-      // Notifications.register(function onRegister(r_error, r_result) {
-      //   if (r_error) {
-      //     // TODO: Improve the way this error is handled.
-      //     alert('Unable to register the user.');
-      //     window.close();
-      //     return;
-      //   }
-      // Notification.init();
       function _createAccount(endPoint) {
         TokFoxClient.createAccount(
           'msisdn',
@@ -47,20 +39,15 @@
       if (!Notifications.endPoint) {
         Notifications.init(
         function onMessage(invitationID) {
-          console.log('Mensaje push recibido por el canal');
-          console.log('La invitationID es ' + invitationID);
           CallHandler.onCall(invitationID);
         },
         function onRegistered(error, endPoint) {
-          console.log('Registrado ' + endPoint);
           _createAccount(endPoint);
         }
       );
       } else {
         _createAccount(Notifications.endPoint);
       }
-        
-      // });
     },
 
     login: function(callback) {

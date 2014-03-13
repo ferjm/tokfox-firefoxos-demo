@@ -2,7 +2,7 @@
 
 (function(exports) {
   var _initialized = false;
-  var hangupButton, countryCodeSelect, phoneNumberInput, sendMSISDN;
+  var hangupButton, countryCodeSelect, phoneNumberInput, sendMSISDN, answerButton;
   var contactNameDOM, contactPhoneNumberDOM;
   var UIManager = {
     init: function() {
@@ -10,6 +10,7 @@
         return;
       }
       hangupButton = document.getElementById('call-hangup');
+      answerButton = document.getElementById('call-answer');
       countryCodeSelect = document.getElementById('country-code');
       phoneNumberInput = document.getElementById('telephone');
       sendMSISDN = document.getElementById('send-msisdn-button');
@@ -27,6 +28,32 @@
       
       _initialized = true;
     },
+
+    incoming: function(name, phoneNumber, onAnswer, onHangup) {
+      document.body.dataset.layout = 'incoming';
+      if (!name) {
+        contactNameDOM.textContent = phoneNumber;
+        contactPhoneNumberDOM.textContent = 'Tokfox user';
+      } else {
+        contactNameDOM.textContent = name;
+        contactPhoneNumberDOM.textContent = phoneNumber;
+      }
+
+      hangupButton.addEventListener('click', function hang() {
+        hangupButton.removeEventListener('click', hang);
+        if (typeof onHangup === 'function') {
+          onHangup();
+        }
+      });
+      answerButton.addEventListener('click', function hang() {
+        answerButton.removeEventListener('click', hang);
+        if (typeof onAnswer === 'function') {
+          onAnswer();
+        }
+        UIManager.call(name, phoneNumber, onHangup);
+      });
+    },
+
     call: function(name, phoneNumber, onHangup) {
       document.body.dataset.layout = 'call';
 
@@ -48,7 +75,6 @@
     register: function(onRegistered) {
       document.body.dataset.layout = 'register';
       sendMSISDN.addEventListener('click', function send() {
-        // sendMSISDN.removeEventListener('click', send);
         if (typeof onRegistered === 'function') {
           var phone =
             countryCodeSelect.options[countryCodeSelect.selectedIndex].value +

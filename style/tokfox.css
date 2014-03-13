@@ -35,15 +35,11 @@ button:active, button:selected, button:visited, button:focus {
 
 
 body[data-layout="register"] #register-panel,
-body[data-layout="call"] #call-panel{
+body[data-layout="call"] #call-panel,
+body[data-layout="incoming"] #call-panel,
+body[data-layout="outgoing"] #call-panel{
   display: block;
 }
-
-body[data-layout="call"] #register-panel,
-body[data-layout="register"] #call-panel{
-  display: none;
-}
-
 
 /*
  * Register panel
@@ -167,4 +163,57 @@ body[data-layout="register"] #register-panel {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: white;
+}
+
+/*#call-answer {
+  display: none;
+}
+
+body[data-layout="incoming"] #call-answer {
+  display: block;
+  height: 4rem;
+}
+*/
+
+body[data-layout="incoming"] #call-hangup,
+body[data-layout="incoming"] #call-answer{
+  width: 49%;
+  height: 4rem;
+  
+}
+
+#call-answer {
+  display: none;
+}
+
+body[data-layout="incoming"] #call-answer{
+  display: inline-block;
+  background: green;
+  background-image: url(images/ActionIcon_40x40_hangup.png);
+  background-repeat: no-repeat;
+  background-position: center -0.3rem;
+  border: none;
+  -moz-box-sizing: border-box;
+  border-radius: .5rem;
+  transform: rotate(180deg);
+  padding-top: .2rem;
+}
+
+body[data-layout="outgoing"] #call-hangup{
+  display: none;
+}
+
+body[data-layout="outgoing"] #call-answer{
+  width: 100%;
+  height: 4rem;
+  display: inline-block;
+  background: green;
+  background-image: url(images/ActionIcon_40x40_hangup.png);
+  background-repeat: no-repeat;
+  background-position: center -0.3rem;
+  border: none;
+  -moz-box-sizing: border-box;
+  border-radius: .5rem;
+  transform: rotate(180deg);
+  padding-top: .2rem;
 }

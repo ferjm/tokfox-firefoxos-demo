@@ -111,11 +111,8 @@
           alias.value,
           sessionId,
           function(i_error, i_result) {
-            console.log('CALLBACK DEL INVITE ' + JSON.stringify(i_result));
             if (typeof callback === 'function') {
               if (!i_error && i_result) {
-
-                console.log('Invitation sent to ' + alias.value + ' user.' + JSON.stringify(i_result));
                 CallHandler.join(apiKey, sessionId, token);
               }
               callback(i_error, i_result);
@@ -126,23 +123,27 @@
     },
 
     onCall: function ch_oncall(invitationID) {
-      console.log('invitationID ' + invitationID);
       navigator.mozApps.getSelf().onsuccess = function (evt) {
         var app = evt.target.result;
         app.launch();
       };
       //
-      UIManager.call(null, 'Incoming call', function() {
-        window.close();
-      });
-      TokFoxClient.acceptInvitation(
-        invitationID,
-        function (error, result) {
-          console.log('Hemos aceptado la invitacion y vamos al lio con ' + result + ' ' + JSON.stringify(result));
-
-          CallHandler.join(result.apiKey, result.sessionId, result.token);
+      UIManager.incoming(
+        null,
+        'Incoming call',
+        function() {
+          TokFoxClient.acceptInvitation(
+            invitationID,
+            function (error, result) {
+              CallHandler.join(result.apiKey, result.sessionId, result.token);
+            }
+          );
+        },
+        function() {
+          window.close();
         }
       );
+      
     },
 
     disconnect: function ch_disconnect() {

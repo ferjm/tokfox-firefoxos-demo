@@ -36,10 +36,6 @@
        type: 'msisdn',
        value: number
     }, function(error, result) {
-      console.log('Resultado del DIAL');
-      // TODO NiceToHave: Update the UI consequently
-      // console.log(JSON.stringify(error));
-      // console.log(JSON.stringify(result));
       if (error) {
         window.close();
       }
