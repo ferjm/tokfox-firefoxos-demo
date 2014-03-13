@@ -48,7 +48,7 @@
     register: function(onRegistered) {
       document.body.dataset.layout = 'register';
       sendMSISDN.addEventListener('click', function send() {
-        sendMSISDN.removeEventListener('click', send);
+        // sendMSISDN.removeEventListener('click', send);
         if (typeof onRegistered === 'function') {
           var phone =
             countryCodeSelect.options[countryCodeSelect.selectedIndex].value +
