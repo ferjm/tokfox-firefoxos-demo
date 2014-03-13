@@ -199,7 +199,41 @@ body[data-layout="incoming"] #call-answer{
   padding-top: .2rem;
 }
 
-body[data-layout="outgoing"] #call-hangup{
+#outgoing-phone-number,
+#outgoing-label {
+  display: none;
+}
+
+body[data-layout="outgoing"] #outgoing-phone-number,
+body[data-layout="outgoing"] #outgoing-label{
+  display: block;
+}
+
+#outgoing-label {
+  width: 100%;
+  overflow: hidden;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  font-weight: 300;
+  color: white;
+}
+
+#outgoing-phone-number {
+  background: transparent;
+  font-size: 4rem;
+  -moz-box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+  color: white;
+}
+
+body[data-layout="outgoing"] #call-hangup,
+body[data-layout="outgoing"] #call-panel-info h1,
+body[data-layout="outgoing"] #call-panel-info h2 {
   display: none;
 }
 
@@ -216,4 +250,8 @@ body[data-layout="outgoing"] #call-answer{
   border-radius: .5rem;
   transform: rotate(180deg);
   padding-top: .2rem;
+}
+
+.OT_mirrored {
+  display: none !important;
 }

@@ -3,7 +3,7 @@
 (function(exports) {
   var _initialized = false;
   var hangupButton, countryCodeSelect, phoneNumberInput, sendMSISDN, answerButton;
-  var contactNameDOM, contactPhoneNumberDOM;
+  var contactNameDOM, contactPhoneNumberDOM, outgoingInput;
   var UIManager = {
     init: function() {
       if (_initialized) {
@@ -16,6 +16,8 @@
       sendMSISDN = document.getElementById('send-msisdn-button');
       contactNameDOM = document.getElementById('call-contact-name');
       contactPhoneNumberDOM = document.getElementById('call-contact-phone');
+      outgoingInput = document.getElementById('outgoing-phone-number');
+      
 
       phoneNumberInput.addEventListener('input', function() {
         if (phoneNumberInput.value.length > 0) {
@@ -25,11 +27,43 @@
         }
       });
 
+      outgoingInput.addEventListener('input', function() {
+        if (outgoingInput.value.length > 0) {
+          answerButton.classList.remove('disabled');
+        } else {
+          answerButton.classList.add('disabled');
+        }
+      });
+
       
       _initialized = true;
     },
 
+    outgoing: function(onCallAction) {
+      answerButton.classList.add('disabled');
+      document.body.dataset.layout = 'outgoing';
+
+      
+      
+
+      answerButton.addEventListener('click', function hang() {
+        answerButton.removeEventListener('click', hang);
+        contactNameDOM.textContent = outgoingInput.value;
+        onCallAction(outgoingInput.value, function() {
+
+        });
+        UIManager.call(null, outgoingInput.value, function() {
+          outgoingInput.value  = '';
+          contactNameDOM.textContent = '';
+          UIManager.outgoing(onCallAction);
+        });
+
+      });
+
+    },
+
     incoming: function(name, phoneNumber, onAnswer, onHangup) {
+      answerButton.classList.remove('disabled');
       document.body.dataset.layout = 'incoming';
       if (!name) {
         contactNameDOM.textContent = phoneNumber;

@@ -53,7 +53,17 @@
     debug && console.log('DEBUG CallHandler: Stream destroyed ' + event.streams.length);
 
     if (event.streams.length < 2) {
-      window.close();
+      if (!window.navigator.mozSetMessageHandler) {
+        UIManager.outgoing(function(number, callback) {
+          CallHandler.dial({
+             type: 'msisdn',
+             value: number
+          }, callback);
+        });
+      } else {
+        window.close();
+      }
+      
     }
     callback();
   }
@@ -119,6 +129,7 @@
             return;
           }
 
+      
         // Retrieve credentials to be used for inviting
         var apiKey = cs_result.apiKey;
         var sessionId = cs_result.sessionId;
