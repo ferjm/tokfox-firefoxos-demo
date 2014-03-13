@@ -46,6 +46,18 @@
     }
   }
 
+  function _streamDestroyedHandler(event, callback) {
+    if (typeof callback !== 'function') {
+      callback = function() {};
+    }
+    debug && console.log('DEBUG CallHandler: Stream destroyed ' + event.streams.length);
+
+    if (event.streams.length < 2) {
+      window.close();
+    }
+    callback();
+  }
+
   var CallHandler = {
     /**
      * Setup all the headers needed in the application for any request to the
@@ -73,6 +85,20 @@
         'streamCreated',
         function onStreamHandler(event) {
           _streamCreatedHandler(event, onStream);
+        }
+      );
+
+      session.addEventListener(
+        'streamDestroyed',
+        function onStreamDestroyedHandler(event) {
+          _streamDestroyedHandler(event, null);
+        }
+      );
+
+      session.addEventListener(
+        'connectionDestroyed',
+        function onConnectionDestroyedHandler(event) {
+          console.log('Connection destroyed');
         }
       );
     },
@@ -149,6 +175,7 @@
     disconnect: function ch_disconnect() {
       // TODO Add tokbox disconnect
       publisher = null;
+      session.disconnect();
       session = null;
     }
   };
