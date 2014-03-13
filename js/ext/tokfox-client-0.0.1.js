@@ -54,6 +54,8 @@ var TokFoxClient = (function TokFoxClient() {
   }
 
   function accountExist(alias, callback) {
+    var options = {};
+
     options.uri = rootUrl + '/account/' + alias.type + '/' + alias.value;
     options.method = 'GET';
 

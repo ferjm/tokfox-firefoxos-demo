@@ -19,7 +19,7 @@
     }
 
     if (!AccountManager.account) {
-      AccountManager.register(function() {
+      AccountManager.login(function() {
         _makeCall(number);
       });
     } else {
@@ -46,4 +46,4 @@
     }
   };
   exports.ActivityHandler = ActivityHandler;
-})(this) || null;
+})(this);
