@@ -161,8 +161,9 @@ var TokFoxClient = (function TokFoxClient() {
       }
     };
 
-    req.onerror = function (error) {
-      callback(error);
+    req.onerror = function (event) {
+      console.log('ERROR ' + event.target.status);
+      callback(event.target.status, null);
     };
 
     req.ontimeout = function () {

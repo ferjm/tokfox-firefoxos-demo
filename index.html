@@ -20,7 +20,7 @@
     <script defer src="js/startup.js"></script>
   </head>
 
-  <body role="application" data-layout="incoming">
+  <body role="application" data-layout="">
     <section id="register-panel" role="region">
       <article id="register-panel-form">
         <p id="tokfox-explanation">
@@ -39,6 +39,8 @@
     <section id="call-panel" role="region">
       <section id="call-panel-info">
         <section id="info-container">
+          <label id="outgoing-label">Type the phone number to call</label>
+          <input type="tel" id="outgoing-phone-number" value="">
           <h1 id="call-contact-name">
           </h1>
           <h2 id="call-contact-phone">

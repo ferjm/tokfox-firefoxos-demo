@@ -7,6 +7,16 @@
 
 window.addEventListener('load', function callSetup(evt) {
   window.removeEventListener('load', callSetup);
+  if (!window.navigator.mozSetMessageHandler) {
+    UIManager.outgoing(function(number, callback) {
+      CallHandler.dial({
+         type: 'msisdn',
+         value: number
+      }, callback);
+    });
+    return;
+  }
+
 
   Notifications.init(
     function onMessage(invitationID) {
