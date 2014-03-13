@@ -18,7 +18,6 @@
       contactPhoneNumberDOM = document.getElementById('call-contact-phone');
       outgoingInput = document.getElementById('outgoing-phone-number');
       
-
       phoneNumberInput.addEventListener('input', function() {
         if (phoneNumberInput.value.length > 0) {
           sendMSISDN.classList.remove('disabled');
@@ -35,6 +34,13 @@
         }
       });
 
+      phoneNumberInput.addEventListener('focus', function() {
+        document.querySelector('[data-layout="register"]').classList.add('keyboard');
+      });
+
+      phoneNumberInput.addEventListener('blur', function() {
+        document.querySelector('[data-layout="register"]').classList.remove('keyboard');
+      });
       
       _initialized = true;
     },
@@ -42,10 +48,7 @@
     outgoing: function(onCallAction) {
       answerButton.classList.add('disabled');
       document.body.dataset.layout = 'outgoing';
-
       
-      
-
       answerButton.addEventListener('click', function hang() {
         answerButton.removeEventListener('click', hang);
         contactNameDOM.textContent = outgoingInput.value;
@@ -109,6 +112,7 @@
     register: function(onRegistered) {
       document.body.dataset.layout = 'register';
       sendMSISDN.addEventListener('click', function send() {
+        LoadingOverlay.show('Signing up...');
         if (typeof onRegistered === 'function') {
           var phone =
             countryCodeSelect.options[countryCodeSelect.selectedIndex].value +
