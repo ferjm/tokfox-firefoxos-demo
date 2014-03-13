@@ -39,6 +39,34 @@ var TokFoxClient = (function TokFoxClient() {
   /**
    *
    */
+  function getAccounts(callback) {
+    var options = {};
+
+    options.uri = rootUrl + '/account/';
+    options.method = 'GET';
+    options.body = {};
+
+    request(options, function onRequestPerformed(error, result) {
+      if (callback && (typeof callback === 'function')) {
+        callback(error, result);
+      }
+    });
+  }
+
+  function accountExist(alias, callback) {
+    options.uri = rootUrl + '/account/' + alias.type + '/' + alias.value;
+    options.method = 'GET';
+
+    request(options, function onDone(error, result) {
+      if (callback && (typeof callback === 'function')) {
+        callback(error, result);
+      }
+    });
+  }
+
+  /**
+   *
+   */
   function createSession(role, sesssioId, callback) {
     var options = {};
 
@@ -97,39 +125,49 @@ var TokFoxClient = (function TokFoxClient() {
     });
   }
 
+  var _timeoutError = {
+    "code": 600,
+    "error": "Timeout error", // string description of the error type
+    "message": "Request exceed the timeout",
+    "info": "https://docs.endpoint/errors/1234" // link to more info on the error
+  };
+
   /**
    *
    */
   function request(options, callback) {
-    var error = null, result = null;
-
     if (debug) {
       dump('options is ' + JSON.stringify(options));
     }
 
     var req = new XMLHttpRequest({mozSystem: true});
     req.open(options.method, options.uri, true);
-    req.onreadystatechange = function onReadyStateChange(evt) {
-      if (req.readyState === 4) {
-        try {
-          result = JSON.parse(req.responseText);
-        } catch(e) {
-        }
-        if (req.status !== 200) {
-         error = result || {};
-         error.status = req.status;
-         error.statusText = req.statusText;
-         result = null;
-        }
-        if (debug) {
-          dump('result is ' + JSON.stringify(result));
-          dump('error is ' + JSON.stringify(error));
-        }
-        if (callback && (typeof callback === 'function')) {
-          callback(error, result);
-        }
+    req.responseType = 'json';
+    req.timeout = 15000;
+
+    req.onload = function () {
+      if (req.status !== 200) {
+        // Response in error case. The error object is defined
+        // in the API.
+        callback(req.response);
+        return;
+      }
+      // If the code is 200, we need to retrieve the response
+      if (typeof callback === 'function') {
+        var result = !req.response ? 'OK' : req.response;
+        callback(null, result);
       }
     };
+
+    req.onerror = function (error) {
+      callback(error);
+    };
+
+    req.ontimeout = function () {
+      callback(_timeoutError);
+    };
+
+    // Send the request
     req.setRequestHeader('Content-Type', 'application/json');
     req.send(JSON.stringify(options.body));
   }
@@ -150,7 +188,9 @@ var TokFoxClient = (function TokFoxClient() {
    'createSession': createSession,
    'invite': invite,
    'acceptInvitation': acceptInvitation,
-   'createAccount': createAccount
+   'createAccount': createAccount,
+   'getAccounts': getAccounts,
+   'accountExist': accountExist
   };
 })();
 
