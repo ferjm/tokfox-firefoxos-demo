@@ -34,9 +34,14 @@
 
     CallHandler.dial({
        type: 'msisdn',
-       alias: number
-    }, function() {
+       value: number
+    }, function(error, result) {
       // TODO NiceToHave: Update the UI consequently
+      console.log(JSON.stringify(error));
+      console.log(JSON.stringify(result));
+      if (error) {
+        window.close();
+      }
     });
   }
 

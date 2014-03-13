@@ -7,7 +7,7 @@
     publishAudio:true,
     publishVideo:false // Disabled by default
   };
-    
+
   var publisher, session;
 
   function _sessionConnectedHandler (event, callback) {
@@ -39,7 +39,7 @@
   function _subscribeToStreams(streams) {
     for (var i = 0; i < streams.length; i++) {
       var stream = streams[i];
-      if (stream.connection.connectionId 
+      if (stream.connection.connectionId
            != session.connection.connectionId) {
         session.subscribe(stream);
       }
@@ -63,14 +63,14 @@
       session.connect(apiKey, token);
 
       session.addEventListener(
-        'sessionConnected', 
+        'sessionConnected',
         function onConnectedHandler(event) {
           _sessionConnectedHandler(event, onConnected);
         }
       );
-      
+
       session.addEventListener(
-        'streamCreated', 
+        'streamCreated',
         function onStreamHandler(event) {
           _streamCreatedHandler(event, onStream);
         }
@@ -82,23 +82,42 @@
      * @param alias Object Must contains 'type' (MSISDN, mail...) & value
      */
     dial: function ch_dial(alias, callback) {
-      TokFoxClient.createSession('publisher', null, function(error, result) {
-        if (error) {
-          callback('Error while creating a session');
-          return;
-        }
+      TokFoxClient.createSession(
+        'publisher',
+        null,
+        function(cs_error, cs_result) {
+	  if (cs_error) {
+            if (typeof callback === 'function') {
+	      callback(cs_error, cs_result);
+            }
+	    return;
+	  }
 
-        // Retrieve credentials to be used for inviting
-        var apiKey = result.apiKey;
-        var sessionId = result.sessionId;
-        var token = result.token;
+	  // Retrieve credentials to be used for inviting
+	  var apiKey = cs_result.apiKey;
+	  var sessionId = cs_result.sessionId;
+	  var token = cs_result.token;
 
-        if (!token || !apiKey || !sessionId) {
-          callback('Result from /Session is not valid');
-          return;
-        }
+	  if (!token || !apiKey || !sessionId) {
+            var error = {};
+            error.msg = 'Result from /Session is not valid';
+            if (typeof callback === 'function') {
+	      callback(error, null);
+            }
+	    return;
+	  }
 
-        TokFoxClient.invite(alias.type, alias.value, sessionId, callback);
+	  TokFoxClient.invite(alias.type,
+			      alias.value,
+			      sessionId,
+			      function(i_error, i_result) {
+            if (typeof callback === 'function') {
+              if (!i_error && i_result) {
+                console.log('Invitation sent to ' + alias.value + ' user.');
+              }
+	      callback(i_error, i_result);
+            }
+	  });
       });
     },
 
@@ -107,7 +126,7 @@
       publisher = null;
       session = null;
     }
-  }
+  };
 
   exports.CallHandler = CallHandler;
 
