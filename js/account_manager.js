@@ -18,24 +18,49 @@
 
     signUp: function signUp(phoneNumber, callback) {
       var self = this;
-      Notifications.register(function onRegister(r_error, r_result) {
-        if (r_error) {
-          // TODO: Improve the way this error is handled.
-          alert('Unable to register the user.');
-          window.close();
-          return;
-        }
-        TokFoxClient.createAccount('msisdn', phoneNumber, r_result.endPoint,
-                                   function(ca_error, ca_result) {
-          if (!ca_error) {
-            self.signIn(phoneNumber, callback);
-            return;
+      // Notifications.register(function onRegister(r_error, r_result) {
+      //   if (r_error) {
+      //     // TODO: Improve the way this error is handled.
+      //     alert('Unable to register the user.');
+      //     window.close();
+      //     return;
+      //   }
+      // Notification.init();
+      function _createAccount(endPoint) {
+        TokFoxClient.createAccount(
+          'msisdn',
+          phoneNumber,
+          endPoint,
+          function(ca_error, ca_result) {
+
+            if (!ca_error) {
+              self.signIn(phoneNumber, callback);
+              return;
+            }
+            // TODO: Handle error if any.
+            alert('Unable to register the user.');
+            window.close();
           }
-          // TODO: Handle error if any.
-          alert('Unable to register the user.');
-          window.close();
-        });
-      });
+        );
+      }
+
+      if (!Notifications.endPoint) {
+        Notifications.init(
+        function onMessage(invitationID) {
+          console.log('Mensaje push recibido por el canal');
+          console.log('La invitationID es ' + invitationID);
+          CallHandler.onCall(invitationID);
+        },
+        function onRegistered(error, endPoint) {
+          console.log('Registrado ' + endPoint);
+          _createAccount(endPoint);
+        }
+      );
+      } else {
+        _createAccount(Notifications.endPoint);
+      }
+        
+      // });
     },
 
     login: function(callback) {

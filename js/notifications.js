@@ -9,68 +9,62 @@
 
 var Notifications = (function() {
 
-  /** Callback funtion to call when the registration gets done. */
-  var onRegister = null;
+  var pushHelper, endPoint;
+  var isRegistered = false;
 
-  /**
-   * Call the callback function once it gets notifications from the server.
-   *
-   * @param {Function} callback Callback function to be called once it gets the
-   *                            notification from the server.
-   */
-  function n_listen(callback) {
-    window.PushHelper.listen('tokfox', null, callback);
-  }
+  function n_init(onMessage, onRegister) {
+    pushHelper = window.PushHelper;
+    pushHelper.listen('tokfox', function(version, endPoint, callback) {
+      // Send version to the callback
+      callback(version);
+    }, onMessage);
 
-  /**
-   * Register the device
-   *
-   * @param {Function} callback Callback function to be called once the
-   *                            registration process gets done. An error object
-   *                            will be passed as the first parameter for the
-   *                            callback function. The PUSH enpoind will be
-   *                            passed as the second parameter for the callback
-   *                            function.
-   */
-  function n_register(callback) {
-
-    // Save the callback to call once the process gets done.
-    onRegister = callback;
-
-    // Return the end point if it is already stored into local store area.
-    if (localStorage['tokfox']) {
-      n_registerNotifications();
-      return;
+    endPoint = localStorage['endPoint'];
+    
+    if (endPoint) {
+      onRegister(null, endPoint);
+      pushHelper.register();
+    } else {
+      pushHelper.register(function(channels) {
+        n_registerNotifications(channels, onRegister, onMessage);
+      });
     }
-
-    var pushServer = window.PushHelper;
-    pushServer.register(n_registerNotifications);
-    pushServer.init();
+    pushHelper.init();
   }
 
   /**
    * Helper function.
    */
-  function n_registerNotifications() {
-    var error = null, result = null;
-
-    try {
-      result = {};
-      result.endPoint = JSON.parse(localStorage['tokfox']).endPoint;
-    } catch(e) {
-      result = null;
-      error = {};
-      error.msg = 'Unable to retrieve the end point.';
+  function n_registerNotifications(channels, onRegister, onMessage) {
+    if (!channels || channels.length !== 1) {
+      window.addEventListener('online', function () {
+        if (isRegistered) {
+          return;
+        }
+        pushHelper.reset();
+        n_init(onMessage, onRegister);
+      }, false);
+      return;
     }
 
-    // Call the callback function once we get the end point.
-    if (typeof onRegister === 'function') {
-      onRegister(error, result);
+    try {
+      endPoint = JSON.parse(localStorage['tokfox']).endPoint;
+      localStorage['endPoint'] = endPoint;
+      
+      if (typeof onRegister === 'function') {
+        onRegister(null, endPoint);
+      }
+    } catch (e) {
+      if (typeof onRegister === 'function') {
+        onRegister({});
+      }
     }
   }
 
   return {
-    listen: n_listen,
-    register: n_register
+    init: n_init,
+    get endPoint() {
+      return endPoint || null;
+    }
   };
 })();
