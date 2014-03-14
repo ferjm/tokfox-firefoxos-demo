@@ -52,6 +52,10 @@ body[data-layout="register"] #register-panel {
   background-position: center 0rem;
 }
 
+body[data-layout="register"].keyboard #register-panel {
+  background: #25A4E8;
+}
+
 #register-panel-form {
   position: absolute;
   bottom: 3rem;
@@ -254,4 +258,60 @@ body[data-layout="outgoing"] #call-answer{
 
 .OT_mirrored {
   display: none !important;
+}
+
+
+/*
+ * loading-overlay
+ */
+#overlay {
+  z-index: 500;
+  background: #F0F0AC;
+  display: none;
+}
+
+#overlay.show {
+  display: block;
+}
+
+section[data-type="dialog"] {
+  z-index: 30;
+  background: white;
+  display: none;
+}
+
+section[data-type="dialog"].show {
+  display: block;
+}
+
+#overlay section {
+  height: 100%;
+  width: 100%;
+  overflow: auto
+}
+
+#loading-overlay {
+  background: black;
+  opacity: .8;
+  color: white;
+}
+
+#loading-overlay p {
+  text-align: center;
+}
+
+#loading-overlay p:first-child {
+  margin-top: 60%;
+  margin-bottom: 1rem;
+}
+
+#loading-overlay p:last-child {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
+#loading-overlay progress{
+  width: 4rem;
+  height: 4rem;
+
 }

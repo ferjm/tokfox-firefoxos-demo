@@ -20,6 +20,7 @@
 
     if (!AccountManager.account) {
       AccountManager.login(function() {
+        LoadingOverlay.hide();
         _makeCall(number);
       });
     } else {
