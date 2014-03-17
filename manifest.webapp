@@ -20,6 +20,7 @@
     { "push-register": "/index.html"},
     { "notification": "/index.html" }
   ],
+  "fullscreen": true,
   "entry_points": {
     "demo": {
       "launch_path": "/demo.html",
