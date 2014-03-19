@@ -63,7 +63,7 @@
       } else {
         window.close();
       }
-      
+
     }
     callback();
   }
@@ -129,7 +129,7 @@
             return;
           }
 
-      
+
         // Retrieve credentials to be used for inviting
         var apiKey = cs_result.apiKey;
         var sessionId = cs_result.sessionId;
@@ -144,8 +144,9 @@
           return;
         }
 
-        TokFoxClient.invite(alias.type,
-          alias.value,
+
+        TokFoxClient.invite(
+          new TokFoxClient.Alias(alias.type, alias.value),
           sessionId,
           function(i_error, i_result) {
             if (typeof callback === 'function') {
@@ -180,7 +181,7 @@
           window.close();
         }
       );
-      
+
     },
 
     disconnect: function ch_disconnect() {

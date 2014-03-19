@@ -7,7 +7,7 @@ var TokFoxClient = (function TokFoxClient() {
   /**
    * Default root URL for TokFox API.
    */
-  var DEFAULT_ROOT_URL = 'http://tokfox.herokuapp.com';
+  var DEFAULT_ROOT_URL = 'http://tokfox-staging.herokuapp.com';
 
   /** Debug flag. */
   var debug = false;
@@ -15,18 +15,52 @@ var TokFoxClient = (function TokFoxClient() {
   /** URL for TokFox API. */
   var rootUrl = DEFAULT_ROOT_URL;
 
+  function Alias(type, value) {
+    this.type = type;
+    this.value = value;
+  }
+
+  Alias.prototype.constructor = Alias;
+
+  Alias.prototype.toString = function() {
+    return this.type + '/' + this.value;
+  };
+
+  function PushEndpoint(invitation, rejection, description) {
+    this.invitation = invitation;
+    this.rejection = rejection;
+    this.description = description;
+  }
+
+  PushEndpoint.prototype.constructor = PushEndpoint;
+
   /**
    *
    */
-  function createAccount(aliasType, aliasValue, pushEndpoint, callback) {
-    var options = {};
+  function createAccount(alias, pushEndpoint, callback) {
+    var options = {}, error = null;
 
-    options.uri = rootUrl + '/account/';
+    if (!alias || !(alias instanceof Alias)) {
+      error = {};
+      error.message = 'Invalid alias';
+    }
+
+    if (!error &&
+        (!pushEndpoint || !(pushEndpoint instanceof PushEndpoint))) {
+      error = {};
+      error.message = 'Invalid PUSH endpoint';
+    }
+
+    if (error &&
+        callback && (typeof callback === 'function')) {
+      callback(error, null);
+      return;
+    }
+
     options.method = 'POST';
+    options.uri = rootUrl + '/account/';
     options.body = {};
-    options.body.alias = {};
-    options.body.alias.type = aliasType;
-    options.body.alias.value = aliasValue;
+    options.body.alias = alias;
     options.body.pushEndpoint = pushEndpoint;
 
     request(options, function onRequestPerformed(error, result) {
@@ -39,12 +73,43 @@ var TokFoxClient = (function TokFoxClient() {
   /**
    *
    */
-  function getAccounts(callback) {
-    var options = {};
+  function updateAccount(alias, newAlias, newPushEndpoint, callback) {
+    var options = {}, error = null;
 
-    options.uri = rootUrl + '/account/';
-    options.method = 'GET';
+    if (!alias || !(alias instanceof Alias)) {
+      error = {};
+      error.message = 'Invalid alias';
+    }
+
+    // The user might not want to add a new alias.
+    if (!error &&
+        newAlias && !(newAlias instanceof Alias)) {
+      error = {};
+      error.message = 'New alias is invalid';
+    }
+
+    // The user might not want to update the existing PUSH endpoint.
+    if (!error &&
+        newPushEndpoint && !(newPushEndpoint instanceof PushEndpoint)) {
+      error = {};
+      error.message = 'Invalid PUSH endpoint';
+    }
+
+    if (error &&
+        callback && (typeof callback === 'function')) {
+      callback(error, null);
+      return;
+    }
+
+    options.method = 'PUT';
+    options.uri = rootUrl + '/account/' + alias.toString();
     options.body = {};
+    if (newAlias) {
+      options.body.alias = newAlias;
+    }
+    if (newPushEndpoint) {
+      options.body.pushEndpoint = newPushEndpoint;
+    }
 
     request(options, function onRequestPerformed(error, result) {
       if (callback && (typeof callback === 'function')) {
@@ -54,9 +119,20 @@ var TokFoxClient = (function TokFoxClient() {
   }
 
   function accountExist(alias, callback) {
-    var options = {};
+    var options = {}, error = null;
 
-    options.uri = rootUrl + '/account/' + alias.type + '/' + alias.value;
+    if (!alias || !(alias instanceof Alias)) {
+      error = {};
+      error.message = 'Invalid alias';
+    }
+
+    if (error &&
+        callback && (typeof callback === 'function')) {
+      callback(error, null);
+      return;
+    }
+
+    options.uri = rootUrl + '/account/' + alias.toString();
     options.method = 'GET';
 
     request(options, function onDone(error, result) {
@@ -92,15 +168,24 @@ var TokFoxClient = (function TokFoxClient() {
   /**
    *
    */
-  function invite(aliasType, aliasValue, sessionId, callback) {
-    var options = {};
+  function invite(alias, sessionId, callback) {
+    var options = {}, error = null;
+
+    if (!alias || !(alias instanceof Alias)) {
+      error = {};
+      error.message = 'Invalid alias';
+    }
+
+    if (error &&
+        callback && (typeof callback === 'function')) {
+      callback(error, null);
+      return;
+    }
 
     options.uri = rootUrl + '/session/invitation/';
     options.method = 'POST';
     options.body = {};
-    options.body.alias = {};
-    options.body.alias.type = aliasType;
-    options.body.alias.value = aliasValue;
+    options.body.alias = alias;
     options.body.sessionId = sessionId;
 
     request(options, function onRequestPerformed(error, result) {
@@ -118,6 +203,23 @@ var TokFoxClient = (function TokFoxClient() {
 
     options.uri = rootUrl + '/session/invitation/' + invitationId;
     options.method = 'GET';
+    options.body = {};
+
+    request(options, function onRequestPerformed(error, result) {
+      if (callback && (typeof callback === 'function')) {
+        callback(error, result);
+      }
+    });
+  }
+
+  /**
+   *
+   */
+  function rejectInvitation(invitationId, callback) {
+    var options = {};
+
+    options.uri = rootUrl + '/session/invitation/' + invitationId;
+    options.method = 'DELETE';
     options.body = {};
 
     request(options, function onRequestPerformed(error, result) {
@@ -162,7 +264,6 @@ var TokFoxClient = (function TokFoxClient() {
     };
 
     req.onerror = function (event) {
-      console.log('ERROR ' + event.target.status);
       callback(event.target.status, null);
     };
 
@@ -186,13 +287,16 @@ var TokFoxClient = (function TokFoxClient() {
 
   // Pulic API
   return {
+   'Alias': Alias,
+   'PushEndpoint': PushEndpoint,
    'debug': debug,
    'rootUrl': rootUrl,
    'createSession': createSession,
    'invite': invite,
    'acceptInvitation': acceptInvitation,
+   'rejectInvitation': rejectInvitation,
    'createAccount': createAccount,
-   'getAccounts': getAccounts,
+   'updateAccount': updateAccount,
    'accountExist': accountExist
   };
 })();
