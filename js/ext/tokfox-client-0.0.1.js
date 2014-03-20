@@ -34,11 +34,8 @@ var TokFoxClient = (function TokFoxClient() {
 
   PushEndpoint.prototype.constructor = PushEndpoint;
 
-  /**
-   *
-   */
   function createAccount(alias, pushEndpoint, callback) {
-    var options = {}, error = null;
+    var error;
 
     if (!alias || !(alias instanceof Alias)) {
       error = {};
@@ -51,30 +48,23 @@ var TokFoxClient = (function TokFoxClient() {
       error.message = 'Invalid PUSH endpoint';
     }
 
-    if (error &&
-        callback && (typeof callback === 'function')) {
+    if (error && callback && (typeof callback === 'function')) {
       callback(error, null);
       return;
     }
 
-    options.method = 'POST';
-    options.uri = rootUrl + '/account/';
-    options.body = {};
-    options.body.alias = alias;
-    options.body.pushEndpoint = pushEndpoint;
-
-    request(options, function onRequestPerformed(error, result) {
-      if (callback && (typeof callback === 'function')) {
-        callback(error, result);
+    request({
+      method: 'POST',
+      uri: rootUrl + '/account/',
+      body: {
+        alias: alias,
+        pushEndpoint: pushEndpoint
       }
-    });
+    }, callback);
   }
 
-  /**
-   *
-   */
   function updateAccount(alias, newAlias, newPushEndpoint, callback) {
-    var options = {}, error = null;
+    var error;
 
     if (!alias || !(alias instanceof Alias)) {
       error = {};
@@ -95,138 +85,108 @@ var TokFoxClient = (function TokFoxClient() {
       error.message = 'Invalid PUSH endpoint';
     }
 
-    if (error &&
-        callback && (typeof callback === 'function')) {
+    if (error && callback && (typeof callback === 'function')) {
       callback(error, null);
       return;
     }
 
-    options.method = 'PUT';
-    options.uri = rootUrl + '/account/' + alias.toString();
-    options.body = {};
+    var body = {};
     if (newAlias) {
-      options.body.alias = newAlias;
+      body.alias = newAlias;
     }
     if (newPushEndpoint) {
-      options.body.pushEndpoint = newPushEndpoint;
+      body.pushEndpoint = newPushEndpoint;
     }
 
-    request(options, function onRequestPerformed(error, result) {
-      if (callback && (typeof callback === 'function')) {
-        callback(error, result);
-      }
-    });
+    request({
+      method: 'PUT',
+      uri: rootUrl + '/account/' + alias.toString(),
+      body: body
+    }, callback);
   }
 
   function accountExist(alias, callback) {
-    var options = {}, error = null;
+    var error;
 
     if (!alias || !(alias instanceof Alias)) {
       error = {};
       error.message = 'Invalid alias';
     }
 
-    if (error &&
-        callback && (typeof callback === 'function')) {
+    if (error && callback && (typeof callback === 'function')) {
       callback(error, null);
       return;
     }
 
-    options.uri = rootUrl + '/account/' + alias.toString();
-    options.method = 'GET';
-
-    request(options, function onDone(error, result) {
-      if (callback && (typeof callback === 'function')) {
-        callback(error, result);
-      }
-    });
+    request({
+      method: 'GET',
+      uri: rootUrl + '/account/' + alias.toString()
+    }, callback);
   }
 
-  /**
-   *
-   */
-  function createSession(role, sesssioId, callback) {
-    var options = {};
-
-    options.uri = rootUrl + '/session/';
-    options.method = 'POST';
-    options.body = {};
+  function createSession(role, sessionId, callback) {
+    var body = {};
     if (role) {
-      options.body.role = role;
+      body.role = role;
     }
-    if (sesssioId) {
-      options.body.sesssioId = sesssioId;
+    if (sessionId) {
+      body.sessionId = sessionId;
     }
 
-    request(options, function onRequestPerformed(error, result) {
-      if (callback && (typeof callback === 'function')) {
-        callback(error, result);
-      }
-    });
+    request({
+      method: 'POST',
+      uri: rootUrl + '/session/',
+      body: body
+    }, callback);
   }
 
-  /**
-   *
-   */
-  function invite(alias, sessionId, callback) {
-    var options = {}, error = null;
+  function invite(alias, callerAlias, sessionId, callback) {
+    var error;
 
-    if (!alias || !(alias instanceof Alias)) {
+    if (!alias || !(alias instanceof Alias) ||
+        (callerAlias && !(callerAlias instanceof Alias))) {
       error = {};
       error.message = 'Invalid alias';
     }
 
-    if (error &&
-        callback && (typeof callback === 'function')) {
+    if (error && callback && (typeof callback === 'function')) {
       callback(error, null);
       return;
     }
 
-    options.uri = rootUrl + '/session/invitation/';
-    options.method = 'POST';
-    options.body = {};
-    options.body.alias = alias;
-    options.body.sessionId = sessionId;
-
-    request(options, function onRequestPerformed(error, result) {
-      if (callback && (typeof callback === 'function')) {
-        callback(error, result);
+    request({
+      method: 'POST',
+      uri: rootUrl + '/session/invitation/',
+      body: {
+        alias: alias,
+        callerAlias: callerAlias,
+        sessionId: sessionId
       }
-    });
+    }, callback);
   }
 
-  /**
-   *
-   */
+  function getInvitation(invitationId, callback) {
+    request({
+      uri: rootUrl + '/session/invitation/' + invitationId,
+      method: 'GET'
+    }, callback);
+  }
+
   function acceptInvitation(invitationId, callback) {
-    var options = {};
-
-    options.uri = rootUrl + '/session/invitation/' + invitationId;
-    options.method = 'GET';
-    options.body = {};
-
-    request(options, function onRequestPerformed(error, result) {
-      if (callback && (typeof callback === 'function')) {
-        callback(error, result);
-      }
-    });
+    request({
+      method: 'PUT',
+      uri: rootUrl + '/session/invitation/' + invitationId
+    }, callback);
   }
 
-  /**
-   *
-   */
   function rejectInvitation(invitationId, callback) {
-    var options = {};
-
     options.uri = rootUrl + '/session/invitation/' + invitationId;
     options.method = 'DELETE';
-    options.body = {};
 
-    request(options, function onRequestPerformed(error, result) {
-      if (callback && (typeof callback === 'function')) {
-        callback(error, result);
-      }
-    });
+    request({
+      method: 'DELETE',
+      uri: rootUrl + '/session/invitation/' + invitationId
+    }, callback);
   }
 
   var _timeoutError = {
@@ -236,9 +196,6 @@ var TokFoxClient = (function TokFoxClient() {
     "info": "https://docs.endpoint/errors/1234" // link to more info on the error
   };
 
-  /**
-   *
-   */
   function request(options, callback) {
     if (debug) {
       dump('options is ' + JSON.stringify(options));
@@ -253,32 +210,39 @@ var TokFoxClient = (function TokFoxClient() {
       if (req.status !== 200) {
         // Response in error case. The error object is defined
         // in the API.
-        callback(req.response);
+        if (callback && (typeof callback === 'function')) {
+          callback(req.response);
+        }
         return;
       }
       // If the code is 200, we need to retrieve the response
-      if (typeof callback === 'function') {
+      if (callback && (typeof callback === 'function')) {
         var result = !req.response ? 'OK' : req.response;
         callback(null, result);
       }
     };
 
     req.onerror = function (event) {
-      callback(event.target.status, null);
+      if (typeof callback === 'function') {
+        callback(event.target.status, null);
+      }
     };
 
     req.ontimeout = function () {
-      callback(_timeoutError);
+      if (typeof callback === 'function') {
+        callback(_timeoutError);
+      }
     };
 
     // Send the request
-    req.setRequestHeader('Content-Type', 'application/json');
-    req.send(JSON.stringify(options.body));
+    if (options.body) {
+      req.setRequestHeader('Content-Type', 'application/json');
+      req.send(JSON.stringify(options.body));
+    } else {
+      req.send();
+    }
   }
 
-  /**
-   *
-   */
   function dump(msg) {
     if (debug) {
       console.log(msg);
@@ -293,6 +257,7 @@ var TokFoxClient = (function TokFoxClient() {
    'rootUrl': rootUrl,
    'createSession': createSession,
    'invite': invite,
+   'getInvitation': getInvitation,
    'acceptInvitation': acceptInvitation,
    'rejectInvitation': rejectInvitation,
    'createAccount': createAccount,

@@ -144,9 +144,13 @@
           return;
         }
 
-
+        var caller;
+        if (AccountManager.account) {
+          caller = new TokFoxClient.Alias('msisdn', AccountManager.account);
+        }
         TokFoxClient.invite(
           new TokFoxClient.Alias(alias.type, alias.value),
+          caller,
           sessionId,
           function(i_error, i_result) {
             if (typeof callback === 'function') {
@@ -165,23 +169,24 @@
         var app = evt.target.result;
         app.launch();
       };
-      //
-      UIManager.incoming(
-        null,
-        'Incoming call',
-        function() {
-          TokFoxClient.acceptInvitation(
-            invitationID,
-            function (error, result) {
-              CallHandler.join(result.apiKey, result.sessionId, result.token);
-            }
-          );
-        },
-        function() {
-          window.close();
-        }
-      );
 
+      TokFoxClient.getInvitation(invitationID, function(error, result) {
+        UIManager.incoming(
+          result.callerAlias.value || null,
+          'Incoming call',
+          function() {
+            TokFoxClient.acceptInvitation(
+              invitationID,
+              function (error, result) {
+                CallHandler.join(result.apiKey, result.sessionId, result.token);
+              }
+            );
+          },
+          function() {
+            window.close();
+          }
+        );
+      });
     },
 
     disconnect: function ch_disconnect() {
