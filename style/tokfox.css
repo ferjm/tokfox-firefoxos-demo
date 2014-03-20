@@ -260,6 +260,11 @@ body[data-layout="outgoing"] #call-answer{
   display: none !important;
 }
 
+.OT_mirrored:last-child {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
 
 /*
  * loading-overlay

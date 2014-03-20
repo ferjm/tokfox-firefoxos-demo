@@ -5,7 +5,7 @@
   // TODO Check options for tuning the performance
   var publisherOptions = {
     publishAudio:true,
-    publishVideo:false // Disabled by default
+    publishVideo:true // Disabled by default
   };
 
   var publisher, session;
