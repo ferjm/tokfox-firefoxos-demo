@@ -117,7 +117,7 @@ body[data-layout="register"].keyboard #register-panel {
  */
 
 #call-panel {
-  background: #25A4E8;
+  z-index: 1000;
 }
 
 #call-panel-info {
@@ -168,16 +168,6 @@ body[data-layout="register"].keyboard #register-panel {
   white-space: nowrap;
   color: white;
 }
-
-/*#call-answer {
-  display: none;
-}
-
-body[data-layout="incoming"] #call-answer {
-  display: block;
-  height: 4rem;
-}
-*/
 
 body[data-layout="incoming"] #call-hangup,
 body[data-layout="incoming"] #call-answer{
